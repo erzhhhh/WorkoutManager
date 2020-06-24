@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="exercise"
+            type="com.example.workoutManager.models.Exercise" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_height"
+        android:layout_marginStart="@dimen/indent_16"
+        android:layout_marginTop="@dimen/indent_4"
+        android:layout_marginEnd="@dimen/indent_16"
+        android:layout_marginBottom="@dimen/indent_4"
+        app:cardCornerRadius="@dimen/indent_8"
+        app:cardElevation="@dimen/indent_8">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:text="@{exercise.name}" />
+
+    </androidx.cardview.widget.CardView>
+</layout>
