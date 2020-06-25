@@ -2,6 +2,8 @@ package com.example.workoutManager.di
 
 import android.content.Context
 import com.example.workoutManager.api.AuthInterceptor
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -22,7 +24,11 @@ open class AppModule(private val context: Context, private val baseUrl: String) 
     @Singleton
     @Provides
     fun provideGsonConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create()
+        return GsonConverterFactory.create(
+            GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create()
+        )
     }
 
 

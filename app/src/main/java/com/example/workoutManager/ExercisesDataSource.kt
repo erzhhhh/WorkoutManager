@@ -4,66 +4,86 @@ import android.annotation.SuppressLint
 import androidx.paging.PageKeyedDataSource
 import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.models.Exercise
+import com.example.workoutManager.models.Image
+import com.example.workoutManager.models.WorkManagerResponse
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 open class ExercisesDataSource(
     private val service: WorkManagerService
-) : PageKeyedDataSource<Int, Exercise>() {
+) : PageKeyedDataSource<String, Exercise>() {
 
-    private var nextPageUrl: String? = null
-    private var previousPageUrl: String? = null
+    override fun loadInitial(
+        params: LoadInitialParams<String>,
+        callback: LoadInitialCallback<String, Exercise>
+    ) {
+        createRequest(service.getPage()) { data, prevUrl, nextUrl ->
+            callback.onResult(data, prevUrl, nextUrl)
+        }
+    }
+
+    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Exercise>) {
+        createRequest(service.getNextPage(params.key)) { data, _, nextUrl ->
+            callback.onResult(data, nextUrl)
+        }
+    }
+
+    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, Exercise>) {
+        createRequest(service.getNextPage(params.key)) { data, prevUrl, _ ->
+            callback.onResult(data, prevUrl)
+        }
+    }
 
     @SuppressLint("CheckResult")
-    override fun loadInitial(
-        params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, Exercise>
+    private fun createRequest(
+        method: Single<WorkManagerResponse>,
+        callBack: (data: List<Exercise>, prevUrl: String?, nextUrl: String?) -> Unit
     ) {
-        val currentPage = 1
-        val nextPage = currentPage + 1
-
-        val list = mutableListOf<Exercise>()
-        service.getExerciseList()
+        method.toObservable()
+            .flatMapIterable(
+                { response -> response.exerciseList },
+                { response: WorkManagerResponse, exercise: Exercise ->
+                    NextItemGroup(
+                        nextUrl = response.nextPageUrl,
+                        data = exercise
+                    )
+                }
+            )
+            .flatMap(
+                { (_, exercise: Exercise) ->
+                    service.getImageUrl(exercise.id)
+                        .map { Optional(it) }
+                        .onErrorReturn { Optional(null) }
+                        .toObservable()
+                },
+                { item: NextItemGroup<Exercise>, imageOptional: Optional<Image> ->
+                    item.copy(data = item.data.copy(imageUrl = imageOptional.data?.thumbnailCropped?.url))
+                }
+            )
             .subscribeOn(Schedulers.io())
+            .toList()
+            .map {
+                NextItemGroup(
+                    it.first().nextUrl,
+                    it.map { it.data }
+                )
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                {
-                    list.addAll(it.exerciseList)
-                    nextPageUrl = it.nextPageUrl
-
-                    callback.onResult(list, 0, nextPage)
+                { (nextUrl, list) ->
+                    callBack(list, null, nextUrl)
                 },
                 {
-                    loadInitial(params, callback)
+                    it.printStackTrace()
                 }
             )
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Exercise>) {
+    data class NextItemGroup<T : Any>(
+        val nextUrl: String,
+        val data: T
+    )
 
-        val currentPage = params.key
-        val nextPage = currentPage + 1
-
-        nextPageUrl?.let { url ->
-            val list = mutableListOf<Exercise>()
-            service.getNextPage(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        list.addAll(it.exerciseList)
-                        previousPageUrl = it.previousPageUrl
-                        nextPageUrl = it.nextPageUrl
-
-                        callback.onResult(list, nextPage)
-                    },
-                    {
-                        loadAfter(params, callback)
-                    }
-                )
-        }
-    }
-
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Exercise>) {
-    }
+    data class Optional<T>(val data: T?)
 }
