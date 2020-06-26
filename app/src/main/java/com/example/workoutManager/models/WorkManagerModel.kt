@@ -40,13 +40,17 @@ data class Exercise(
     @Expose
     @SerializedName("equipment")
     val equipmentList: List<String>,
-    val imageUrl: String?
+    val imageUrl: String?,
+    val bigImageUrl: String?
 ) : Parcelable
 
 data class Image(
     @Expose
     @SerializedName("thumbnail_cropped")
-    val thumbnailCropped: ImageInfo
+    val thumbnailCropped: ImageInfo,
+    @Expose
+    @SerializedName("medium")
+    val medium: ImageInfo
 )
 
 data class ImageInfo(

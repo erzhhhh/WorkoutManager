@@ -30,4 +30,12 @@ class ExerciseDetailsFragment : Fragment() {
         binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.exercise = requireArguments().getParcelable(EXERCISE)
+            ?: throw IllegalArgumentException("Use newInstance")
+    }
 }

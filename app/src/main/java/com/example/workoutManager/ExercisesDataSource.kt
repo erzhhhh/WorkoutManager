@@ -58,7 +58,12 @@ open class ExercisesDataSource(
                         .toObservable()
                 },
                 { item: NextItemGroup<Exercise>, imageOptional: Optional<Image> ->
-                    item.copy(data = item.data.copy(imageUrl = imageOptional.data?.thumbnailCropped?.url))
+                    item.copy(
+                        data = item.data.copy(
+                            imageUrl = imageOptional.data?.thumbnailCropped?.url,
+                            bigImageUrl = imageOptional.data?.medium?.url
+                        )
+                    )
                 }
             )
             .subscribeOn(Schedulers.io())

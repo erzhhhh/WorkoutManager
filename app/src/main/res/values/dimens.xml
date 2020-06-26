@@ -6,4 +6,5 @@
     <dimen name="indent_16">16dp</dimen>
     <dimen name="indent_24">24dp</dimen>
     <dimen name="indent_50">50dp</dimen>
+    <dimen name="indent_100">100dp</dimen>
 </resources>

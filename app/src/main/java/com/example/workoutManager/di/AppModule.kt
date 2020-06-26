@@ -2,7 +2,6 @@ package com.example.workoutManager.di
 
 import android.content.Context
 import com.example.workoutManager.api.AuthInterceptor
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides

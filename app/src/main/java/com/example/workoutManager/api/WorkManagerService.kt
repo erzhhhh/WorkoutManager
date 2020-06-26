@@ -2,7 +2,6 @@ package com.example.workoutManager.api
 
 import com.example.workoutManager.models.Image
 import com.example.workoutManager.models.WorkManagerResponse
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
