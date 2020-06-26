@@ -31,7 +31,8 @@ class ExerciseRecyclerViewAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onItemClickListener
         )
     }
 
@@ -43,8 +44,13 @@ class ExerciseRecyclerViewAdapter(
     }
 
     inner class ExerciseVH(
-        private val binding: ViewExerciseItemBinding
+        private val binding: ViewExerciseItemBinding,
+        onItemClickListener: OnItemClickListener<Exercise>
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.itemClickListener = onItemClickListener
+        }
 
         fun bind(pm: Exercise?) {
             binding.exercise = pm

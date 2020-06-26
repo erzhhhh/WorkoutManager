@@ -10,7 +10,7 @@ import com.example.workoutManager.utils.OnItemClickListener
 
 
 @BindingAdapter(
-    value = ["items", "itemClickListener"],
+    value = ["items", "onItemClickListener"],
     requireAll = true
 )
 fun setPagerItems(

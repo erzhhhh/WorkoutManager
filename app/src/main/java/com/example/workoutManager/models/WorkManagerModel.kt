@@ -1,7 +1,9 @@
 package com.example.workoutManager.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class WorkManagerResponse(
     @Expose
@@ -18,6 +20,7 @@ data class WorkManagerResponse(
     val exerciseList: List<Exercise>
 )
 
+@Parcelize
 data class Exercise(
     @Expose
     @SerializedName("id")
@@ -25,6 +28,9 @@ data class Exercise(
     @Expose
     @SerializedName("category")
     val category: String,
+    @Expose
+    @SerializedName("description")
+    val description: String,
     @Expose
     @SerializedName("name")
     val name: String,
@@ -35,7 +41,7 @@ data class Exercise(
     @SerializedName("equipment")
     val equipmentList: List<String>,
     val imageUrl: String?
-)
+) : Parcelable
 
 data class Image(
     @Expose
