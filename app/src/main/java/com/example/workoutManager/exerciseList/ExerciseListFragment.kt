@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import com.example.workoutManager.App
 import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.databinding.FragmentListBinding
+import com.example.workoutManager.models.Exercise
+import com.example.workoutManager.utils.OnItemClickListener
 import javax.inject.Inject
 
 class ExerciseListFragment : Fragment() {
@@ -43,5 +45,11 @@ class ExerciseListFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        binding.itemClickListener = object : OnItemClickListener<Exercise?> {
+            override fun onItemClick(item: Exercise?) {
+
+            }
+        }
     }
 }

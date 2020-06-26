@@ -9,10 +9,15 @@
             name="viewModel"
             type="com.example.workoutManager.exerciseList.ExerciseListViewModel" />
 
+        <variable
+            name="itemClickListener"
+            type="com.example.workoutManager.utils.OnItemClickListener&lt;com.example.workoutManager.models.Exercise>" />
+
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
+        itemClickListener="@{itemClickListener}"
         items="@{viewModel.childModels}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

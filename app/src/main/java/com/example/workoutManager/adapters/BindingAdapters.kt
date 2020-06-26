@@ -6,18 +6,21 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.workoutManager.models.Exercise
+import com.example.workoutManager.utils.OnItemClickListener
 
 
 @BindingAdapter(
-    value = ["items"]
+    value = ["items", "itemClickListener"],
+    requireAll = true
 )
 fun setPagerItems(
     recyclerView: RecyclerView,
-    offerPagerItems: PagedList<Exercise>?
+    offerPagerItems: PagedList<Exercise>?,
+    onItemClickListener: OnItemClickListener<Exercise>
 ) {
     recyclerView.run {
-        (adapter as? ExerciseRecyclerViewAdapter ?: ExerciseRecyclerViewAdapter(
-        )
+        (adapter as? ExerciseRecyclerViewAdapter ?: ExerciseRecyclerViewAdapter(onItemClickListener)
+            .also { it.onItemClickListener = onItemClickListener }
             .also { adapter = it })
             .also { it.submitList(offerPagerItems) }
     }

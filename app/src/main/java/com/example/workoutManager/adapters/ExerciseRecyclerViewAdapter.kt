@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.workoutManager.databinding.ViewExerciseItemBinding
 import com.example.workoutManager.models.Exercise
+import com.example.workoutManager.utils.OnItemClickListener
 
-class ExerciseRecyclerViewAdapter :
-    PagedListAdapter<Exercise, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class ExerciseRecyclerViewAdapter(
+    var onItemClickListener: OnItemClickListener<Exercise>
+) : PagedListAdapter<Exercise, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Exercise>() {
