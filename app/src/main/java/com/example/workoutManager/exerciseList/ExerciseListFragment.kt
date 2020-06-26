@@ -91,6 +91,11 @@ class ExerciseListFragment : Fragment() {
                 }
             }
             it.setOnQueryTextListener(queryTextListener)
+
+            it.setOnCloseListener {
+                viewModel.filterText.postValue("")
+                true
+            }
         }
 
         super.onCreateOptionsMenu(menu, inflater)
