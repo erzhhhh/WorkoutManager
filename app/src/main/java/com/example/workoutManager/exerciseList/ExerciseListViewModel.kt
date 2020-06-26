@@ -9,14 +9,14 @@ import androidx.paging.PagedList
 import com.example.workoutManager.ExercisesDataFactory
 import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.models.Exercise
+import com.example.workoutManager.models.NetworkState
 
 
 open class ExerciseListViewModel(private val service: WorkManagerService) : ViewModel() {
 
     private var _childModels = MutableLiveData<PagedList<Exercise>>()
     var childModels: LiveData<PagedList<Exercise>> = _childModels
-
-
+    private lateinit var networkState: LiveData<NetworkState>
     val filterText = MutableLiveData<String>()
 
     private lateinit var factory: ExercisesDataFactory
@@ -24,6 +24,8 @@ open class ExerciseListViewModel(private val service: WorkManagerService) : View
     init {
         initialize()
     }
+
+    fun currentNetworkState(): LiveData<NetworkState> = networkState
 
     private fun initialize() {
         filterText.value = ""
@@ -39,6 +41,10 @@ open class ExerciseListViewModel(private val service: WorkManagerService) : View
         childModels = Transformations.switchMap(filterText) { input ->
             temp(input, pagedListConfig)
         }
+
+        networkState = Transformations.switchMap(factory.mutableDataSource) {
+            it.initialLoad
+        }
     }
 
     private fun temp(
@@ -52,5 +58,9 @@ open class ExerciseListViewModel(private val service: WorkManagerService) : View
             factory.searchKey = searchKey
             LivePagedListBuilder(factory, pagedListConfig).build()
         }
+    }
+
+    fun retry() {
+        factory.retry.invoke()
     }
 }

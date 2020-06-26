@@ -10,6 +10,9 @@ class ExercisesDataFactory(private val service: WorkManagerService, var searchKe
 
     private lateinit var dataSource: ExercisesDataSource
     val mutableDataSource: MutableLiveData<ExercisesDataSource> = MutableLiveData()
+    var retry: () -> Unit = {
+        dataSource.retryAllFailed()
+    }
 
     override fun create(): DataSource<String, Exercise> {
         dataSource = ExercisesDataSource(service, searchKey.orEmpty())

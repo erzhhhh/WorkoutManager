@@ -13,12 +13,18 @@
             name="itemClickListener"
             type="com.example.workoutManager.utils.OnItemClickListener&lt;com.example.workoutManager.models.Exercise>" />
 
+        <variable
+            name="retryClickListener"
+            type="com.example.workoutManager.utils.OnRetryClickListener" />
+
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         items="@{viewModel.childModels}"
+        networkState="@{viewModel.currentNetworkState()}"
         onItemClickListener="@{itemClickListener}"
+        retryClickListener="@{retryClickListener}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

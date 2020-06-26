@@ -1,10 +1,12 @@
 package com.example.workoutManager
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.models.Exercise
 import com.example.workoutManager.models.Image
+import com.example.workoutManager.models.NetworkState
 import com.example.workoutManager.models.WorkManagerResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,31 +17,56 @@ open class ExercisesDataSource(
     private val search: String
 ) : PageKeyedDataSource<String, Exercise>() {
 
+    val initialLoad: MutableLiveData<NetworkState> = MutableLiveData()
+    private var retry: (() -> Any)? = null
+
+    fun retryAllFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.invoke()
+    }
+
     @SuppressLint("CheckResult")
     override fun loadInitial(
         params: LoadInitialParams<String>,
         callback: LoadInitialCallback<String, Exercise>
     ) {
+        initialLoad.postValue(NetworkState.LOADING)
+
         createRequest(service.getPage(), search)
             .subscribe(
                 {
                     callback.onResult(it.items, null, it.nextPage)
+                    initialLoad.postValue(NetworkState.LOADED)
+                    retry = null
                 },
                 {
+                    retry = {
+                        loadInitial(params, callback)
+                    }
                     it.printStackTrace()
+                    initialLoad.value = NetworkState.error(it.message)
                 }
             )
     }
 
     @SuppressLint("CheckResult")
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Exercise>) {
+        initialLoad.postValue(NetworkState.LOADING)
+
         createRequest(service.getNextPage(params.key), search)
             .subscribe(
                 {
                     callback.onResult(it.items, it.nextPage)
+                    initialLoad.postValue(NetworkState.LOADED)
+                    retry = null
                 },
                 {
+                    retry = {
+                        loadAfter(params, callback)
+                    }
                     it.printStackTrace()
+                    initialLoad.value = NetworkState.error(it.message)
                 }
             )
     }

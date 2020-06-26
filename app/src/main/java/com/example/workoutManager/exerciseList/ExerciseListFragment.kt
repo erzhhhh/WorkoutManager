@@ -14,6 +14,7 @@ import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.databinding.FragmentListBinding
 import com.example.workoutManager.models.Exercise
 import com.example.workoutManager.utils.OnItemClickListener
+import com.example.workoutManager.utils.OnRetryClickListener
 import javax.inject.Inject
 
 
@@ -61,6 +62,12 @@ class ExerciseListFragment : Fragment() {
                 item?.let {
                     (activity as MainActivity).onItemClick(it)
                 }
+            }
+        }
+
+        binding.retryClickListener = object : OnRetryClickListener {
+            override fun onButtonClick() {
+                viewModel.retry()
             }
         }
     }
