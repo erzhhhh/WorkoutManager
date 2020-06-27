@@ -5,4 +5,9 @@
     <string name="second_fragment_label">Second Fragment</string>
 
     <string name="error">Retry</string>
+    <string name="category">Category: </string>
+    <string name="name">Exercise name: </string>
+    <string name="equipment">Equipment: </string>
+    <string name="muscles">Muscles: </string>
+    <string name="desc">Description: </string>
 </resources>

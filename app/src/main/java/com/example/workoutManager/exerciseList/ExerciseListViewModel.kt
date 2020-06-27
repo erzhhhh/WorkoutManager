@@ -11,12 +11,13 @@ import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.models.Exercise
 import com.example.workoutManager.models.NetworkState
 
-
 open class ExerciseListViewModel(private val service: WorkManagerService) : ViewModel() {
+
+    private lateinit var networkState: LiveData<NetworkState>
+    lateinit var isLoading: LiveData<Boolean>
 
     private var _childModels = MutableLiveData<PagedList<Exercise>>()
     var childModels: LiveData<PagedList<Exercise>> = _childModels
-    private lateinit var networkState: LiveData<NetworkState>
     val filterText = MutableLiveData<String>()
 
     private lateinit var factory: ExercisesDataFactory
@@ -39,15 +40,19 @@ open class ExerciseListViewModel(private val service: WorkManagerService) : View
         factory = ExercisesDataFactory(service)
 
         childModels = Transformations.switchMap(filterText) { input ->
-            temp(input, pagedListConfig)
+            loadExerciseList(input, pagedListConfig)
         }
 
         networkState = Transformations.switchMap(factory.mutableDataSource) {
             it.initialLoad
         }
+
+        isLoading = Transformations.switchMap(factory.mutableDataSource) {
+            it.isLoading
+        }
     }
 
-    private fun temp(
+    private fun loadExerciseList(
         searchKey: String,
         pagedListConfig: PagedList.Config
     ): LiveData<PagedList<Exercise>> {

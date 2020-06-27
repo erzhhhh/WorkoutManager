@@ -18,6 +18,7 @@ open class ExercisesDataSource(
 ) : PageKeyedDataSource<String, Exercise>() {
 
     val initialLoad: MutableLiveData<NetworkState> = MutableLiveData()
+    val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     private var retry: (() -> Any)? = null
 
     fun retryAllFailed() {
@@ -32,12 +33,14 @@ open class ExercisesDataSource(
         callback: LoadInitialCallback<String, Exercise>
     ) {
         initialLoad.postValue(NetworkState.LOADING)
+        isLoading.postValue(true)
 
         createRequest(service.getPage(), search)
             .subscribe(
                 {
                     callback.onResult(it.items, null, it.nextPage)
                     initialLoad.postValue(NetworkState.LOADED)
+                    isLoading.postValue(false)
                     retry = null
                 },
                 {
@@ -46,6 +49,7 @@ open class ExercisesDataSource(
                     }
                     it.printStackTrace()
                     initialLoad.value = NetworkState.error(it.message)
+                    isLoading.postValue(false)
                 }
             )
     }

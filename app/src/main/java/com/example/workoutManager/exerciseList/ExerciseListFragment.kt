@@ -7,6 +7,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.workoutManager.App
 import com.example.workoutManager.MainActivity
 import com.example.workoutManager.R

@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.example.workoutManager.exerciseList.ExerciseListViewModel" />
@@ -19,14 +21,27 @@
 
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        items="@{viewModel.childModels}"
-        networkState="@{viewModel.currentNetworkState()}"
-        onItemClickListener="@{itemClickListener}"
-        retryClickListener="@{retryClickListener}"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            items="@{viewModel.childModels}"
+            networkState="@{viewModel.currentNetworkState()}"
+            onItemClickListener="@{itemClickListener}"
+            retryClickListener="@{retryClickListener}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </FrameLayout>
 
 </layout>

@@ -46,7 +46,7 @@ data class Exercise(
 
 data class Image(
     @Expose
-    @SerializedName("thumbnail_cropped")
+    @SerializedName("small_cropped")
     val thumbnailCropped: ImageInfo,
     @Expose
     @SerializedName("medium")

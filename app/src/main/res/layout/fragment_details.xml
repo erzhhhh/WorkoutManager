@@ -11,46 +11,83 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/category"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{exercise.category}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="@dimen/indent_16">
 
-        <TextView
-            android:id="@+id/exerciseName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{exercise.name}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/category" />
+            <ImageView
+                android:id="@+id/image"
+                image="@{exercise.bigImageUrl}"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:padding="@dimen/indent_16"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/image"
-            image="@{exercise.bigImageUrl}"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/indent_100"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/exerciseName" />
+            <TextView
+                android:id="@+id/category"
+                formatName="@{exercise.category}"
+                formatType="@{@string/category}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/indent_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image" />
 
-        <TextView
-            android:id="@+id/desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{exercise.description}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image" />
+            <TextView
+                android:id="@+id/exerciseName"
+                formatName="@{exercise.name}"
+                formatType="@{@string/name}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/indent_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/desc"
+                formatHtmlName="@{exercise.description}"
+                formatType="@{@string/desc}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/indent_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/exerciseName" />
 
+            <TextView
+                android:id="@+id/equipment"
+                formatType="@{@string/equipment}"
+                list="@{exercise.equipmentList}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/indent_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/desc"
+                app:layout_constraintVertical_weight="1" />
+
+            <TextView
+                android:id="@+id/muscle"
+                formatType="@{@string/muscles}"
+                list="@{exercise.muscleList}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/indent_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/equipment"
+                app:layout_constraintVertical_weight="1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>
