@@ -74,3 +74,33 @@ data class Category(
     @SerializedName("name")
     val name: String
 )
+
+data class EquipmentResponse(
+    @Expose
+    @SerializedName("results")
+    val equipment: List<Equipment>
+)
+
+data class Equipment(
+    @Expose
+    @SerializedName("id")
+    val id: String,
+    @Expose
+    @SerializedName("name")
+    val name: String
+)
+
+data class MuscleResponse(
+    @Expose
+    @SerializedName("results")
+    val muscles: List<Muscle>
+)
+
+data class Muscle(
+    @Expose
+    @SerializedName("id")
+    val id: String,
+    @Expose
+    @SerializedName("name")
+    val name: String
+)

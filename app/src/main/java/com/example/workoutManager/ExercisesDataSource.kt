@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.workoutManager.api.WorkManagerService
+import com.example.workoutManager.ext.mapDetails
 import com.example.workoutManager.models.*
 import com.example.workoutManager.repo.CategoryRepo
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function4
 import io.reactivex.schedulers.Schedulers
 
 open class ExercisesDataSource(
@@ -88,6 +89,8 @@ open class ExercisesDataSource(
         var nextUrl: String? = null
         return Observable.combineLatest(
             categoryRepo.categories.toObservable(),
+            categoryRepo.equipments.toObservable(),
+            categoryRepo.muscles.toObservable(),
             method.toObservable()
                 .doOnNext { nextUrl = it.nextPageUrl }
                 .flatMapIterable { response -> response.exerciseList }
@@ -127,10 +130,20 @@ open class ExercisesDataSource(
                     }
                 )
                 .toObservable(),
-            BiFunction<CategoryResponse, Page, Page> { categoryResponse, t2 ->
-                categoriesChips.postValue(categoryResponse.categories)
+            Function4<CategoryResponse, EquipmentResponse, MuscleResponse, Page, Page> { t1, t2, t3, t4 ->
+                categoriesChips.postValue(t1.categories)
 
-                t2
+                val ppp = t4.items
+
+                val ooo = t2.equipment.map { it.id to it.name }.toMap()
+
+
+                t4.copy(
+                    items = t4.items.mapDetails(
+                        t2.equipment.map { it.id to it.name }.toMap(),
+                        t3.muscles.map { it.id to it.name }.toMap()
+                    )
+                )
             }
         )
             .firstOrError()

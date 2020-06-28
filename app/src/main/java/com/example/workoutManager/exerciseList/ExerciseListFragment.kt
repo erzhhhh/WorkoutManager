@@ -23,6 +23,7 @@ class ExerciseListFragment : Fragment() {
 
     @Inject
     lateinit var dataSource: WorkManagerService
+
     @Inject
     lateinit var categoryRepo: CategoryRepo
 

@@ -1,8 +1,6 @@
 package com.example.workoutManager.api
 
-import com.example.workoutManager.models.CategoryResponse
-import com.example.workoutManager.models.Image
-import com.example.workoutManager.models.WorkManagerResponse
+import com.example.workoutManager.models.*
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -21,5 +19,11 @@ interface WorkManagerService {
     fun getNextPage(@Url url: String): Single<WorkManagerResponse>
 
     @GET("v2/exercisecategory/")
-    fun getCategories(): Single<CategoryResponse> // TODO: createmodel
+    fun getCategories(): Single<CategoryResponse>
+
+    @GET("v2/equipment/")
+    fun getEquipment(): Single<EquipmentResponse>
+
+    @GET("v2/muscle/")
+    fun getMuscles(): Single<MuscleResponse>
 }
