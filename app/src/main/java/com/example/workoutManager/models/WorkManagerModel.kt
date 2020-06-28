@@ -104,3 +104,8 @@ data class Muscle(
     @SerializedName("name")
     val name: String
 )
+
+data class CategoryView(
+    val category: Category,
+    val isChecked: Boolean
+)

@@ -4,6 +4,7 @@ import com.example.workoutManager.api.WorkManagerService
 import com.example.workoutManager.models.CategoryResponse
 import com.example.workoutManager.models.EquipmentResponse
 import com.example.workoutManager.models.MuscleResponse
+import io.reactivex.Observable
 import io.reactivex.Single
 
 class CategoryRepo(private val service: WorkManagerService) {

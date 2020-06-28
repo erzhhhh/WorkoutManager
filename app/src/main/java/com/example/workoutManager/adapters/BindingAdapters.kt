@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.workoutManager.R
 import com.example.workoutManager.exerciseList.ExerciseListViewModel
-import com.example.workoutManager.models.Category
+import com.example.workoutManager.models.CategoryView
 import com.example.workoutManager.models.Exercise
 import com.example.workoutManager.models.NetworkState
 import com.example.workoutManager.utils.OnItemClickListener
@@ -130,68 +130,51 @@ fun bindItemList(
     }
 }
 
-//@BindingAdapter(
-//    value = ["singleCheckedChip"],
-//    requireAll = true
-//)
-//fun bindSingleCheckedChip(group: ChipGroup, tag: String?) {
-//    tag?.let {
-//        group.findViewWithTag<Chip>(tag)?.let { chip ->
-//            if (!chip.isChecked) chip.isChecked = true
-//        } ?: group.check(View.NO_ID)
-//    } ?: run {
-//        group.check(View.NO_ID)
-//    }
-//}
-//
-//@InverseBindingAdapter(attribute = "singleCheckedChip")
-//fun getSingleCheckedChip(group: ChipGroup): String? {
-//    return if (group.checkedChipId != View.NO_ID) {
-//        group.findViewById<Chip>(group.checkedChipId)?.tag as? String
-//    } else {
-//        null
-//    }
-//}
-//
-//@BindingAdapter("singleCheckedChipAttrChanged")
-//fun setSingleCheckedChipListener(
-//    group: ChipGroup,
-//    attrChange: InverseBindingListener
-//) {
-//    group.setOnCheckedChangeListener { _, _ -> attrChange.onChange() }
-//}
-
 @BindingAdapter(
     value = ["categories", "onChipClickListener"],
     requireAll = true
 )
 fun bindCategoriesChip(
     group: ChipGroup,
-    categories: List<Category>?,
+    categories: List<CategoryView>?,
     viewModel: ExerciseListViewModel
 ) {
 
-    if (group.size != categories?.size ?: 0) {
-        categories?.let {
+    categories?.let {
+        if (group.size != it.size) {
+            group.removeAllViews()
             for (index in categories.indices) {
                 val chip = Chip(group.context)
                 with(chip) {
-                    text = categories[index].name
-                    tag = categories[index].name
+                    text = categories[index].category.name
+                    tag = categories[index].category.name
                     isCheckable = true
+                    isChecked = categories[index].isChecked
                 }
                 group.addView(chip)
                 group.invalidate()
             }
-        }
-
-        group.setOnCheckedChangeListener { _, checkedId ->
-            group.findViewById<Chip>(checkedId)?.let { chip ->
-                if (!chip.isChecked) {
-                    chip.isChecked = true
+        } else {
+            for (index in categories.indices) {
+                val chip = group.findViewWithTag<Chip>(categories[index].category.name)
+                when {
+                    chip.isChecked && !categories[index].isChecked -> {
+                        chip.isChecked = false
+                    }
+                    !chip.isChecked && categories[index].isChecked -> {
+                        chip.isChecked = true
+                    }
                 }
-                viewModel.chipClickListener(chip.text.toString())
-            } ?: group.check(View.NO_ID)
+            }
         }
+    }
+
+    group.setOnCheckedChangeListener { _, checkedId ->
+        group.findViewById<Chip>(checkedId)?.let { chip ->
+            if (!chip.isChecked) {
+                chip.isChecked = true
+            }
+            viewModel.chipClickListener(chip.text.toString())
+        } ?: group.check(View.NO_ID)
     }
 }

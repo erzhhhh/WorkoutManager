@@ -1,5 +1,6 @@
 package com.example.workoutManager.exerciseList
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -15,10 +16,12 @@ import com.example.workoutManager.models.CategoriesConstants.CALVES
 import com.example.workoutManager.models.CategoriesConstants.CHEST
 import com.example.workoutManager.models.CategoriesConstants.LEGS
 import com.example.workoutManager.models.CategoriesConstants.SHOULDERS
-import com.example.workoutManager.models.Category
+import com.example.workoutManager.models.CategoryView
 import com.example.workoutManager.models.Exercise
 import com.example.workoutManager.models.NetworkState
 import com.example.workoutManager.repo.CategoryRepo
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 open class ExerciseListViewModel(
@@ -28,7 +31,7 @@ open class ExerciseListViewModel(
 
     private lateinit var networkState: LiveData<NetworkState>
     lateinit var isLoading: LiveData<Boolean>
-    lateinit var categoriesChips: LiveData<List<Category>>
+    val categoriesChips = MutableLiveData<List<CategoryView>>()
 
     private var _childModels = MutableLiveData<PagedList<Exercise>>()
     var childModels: LiveData<PagedList<Exercise>> = _childModels
@@ -38,6 +41,9 @@ open class ExerciseListViewModel(
     private lateinit var factory: ExercisesDataFactory
 
     fun chipClickListener(name: String) {
+        categoriesChips.value = categoriesChips.value?.map {
+            it.copy(isChecked = it.category.name == name)
+        }
         searchCategory = when (name.toLowerCase(Locale.ROOT)) {
             ARMS -> "8"
             LEGS -> "9"
@@ -81,9 +87,7 @@ open class ExerciseListViewModel(
             it.isLoading
         }
 
-        categoriesChips = Transformations.switchMap(factory.mutableDataSource) {
-            it.categoriesChips
-        }
+        loadCategories()
     }
 
     private fun loadExerciseList(
@@ -102,7 +106,25 @@ open class ExerciseListViewModel(
         }
     }
 
+    @SuppressLint("CheckResult")
+    private fun loadCategories() {
+        categoryRepo.categories
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    categoriesChips.value = it.categories.map { category ->
+                        CategoryView(category, false)
+                    }
+                },
+                {
+                    it.printStackTrace()
+                }
+            )
+    }
+
     fun retry() {
         factory.retry.invoke()
+        loadCategories()
     }
 }
