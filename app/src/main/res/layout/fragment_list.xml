@@ -21,15 +21,29 @@
 
     </data>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            categories="@{viewModel.categoriesChips}"
+            onChipClickListener="@{viewModel}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/indent_16"
+            android:layout_marginEnd="@dimen/indent_16"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            app:singleSelection="true">
+
+        </com.google.android.material.chip.ChipGroup>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
@@ -39,9 +53,10 @@
             retryClickListener="@{retryClickListener}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/chipGroup"
             android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </layout>

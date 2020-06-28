@@ -58,3 +58,19 @@ data class ImageInfo(
     @SerializedName("url")
     val url: String
 )
+
+
+data class CategoryResponse(
+    @Expose
+    @SerializedName("results")
+    val categories: List<Category>
+)
+
+data class Category(
+    @Expose
+    @SerializedName("id")
+    val id: String,
+    @Expose
+    @SerializedName("name")
+    val name: String
+)

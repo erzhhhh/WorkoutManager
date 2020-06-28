@@ -10,4 +10,11 @@
     <string name="equipment">Equipment: </string>
     <string name="muscles">Muscles: </string>
     <string name="desc">Description: </string>
+    <string name="arms">Arms</string>
+    <string name="legs">Legs</string>
+    <string name="abs">Abs</string>
+    <string name="chest">Chest</string>
+    <string name="back">Back</string>
+    <string name="shoulders">Shoulders</string>
+    <string name="calves">Calves</string>
 </resources>
